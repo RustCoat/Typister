@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --color-fill: #303030;
+        --color-fill-accent: #333333;
+        --color-fill-secondary_accent: #3d3d3d;
+        --color-fill-accent-hover: #868282;
+        --color-text: #fafafa;
+    }
+}
+
+body {
+    background: linear-gradient(217deg, #090909, 60%, var(--color-fill-accent));
+    color: var(--color-text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+html {
+    background-color: var(--color-fill);
+}
