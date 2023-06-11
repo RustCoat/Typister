@@ -229,6 +229,7 @@
   <div class="flex flex-col justify-start w-1/2 gap-2">
     {#if data?.name}
     <div class="flex justify-center gap-2">
+      {#key racers.length == 0}
       {#each racers as racer}
           <div
             class="flex flex-col gap-2 w-32 bg-skin-accent rounded shadow-2xl p-2"
@@ -250,6 +251,7 @@
             </div>
           </div>
       {/each}
+      {/key}
       <div
         class="flex flex-col gap-2 w-32 bg-skin-accent rounded shadow-2xl p-2"
       >

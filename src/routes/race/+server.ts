@@ -165,12 +165,13 @@ function TryWaiting() {
 }
 
 function TryForceWaiting() {
-    if (racers.length > 0) return;
-
+    let count: number = 0;
+    for (const sessionIteration in streams) {
+        count += 1;
+    }
+    if (count > 0) return;
     state = State.Waiting;
-    SendToEverySessionExcept("", {
-        state,
-    })
+    racers = [];
 }
 
 function AddRacer(session: string) {
