@@ -20,11 +20,11 @@
                 <Trophy/>
                 <p class="align-middle leading-10">Leaderboard</p>
             </a>
-            {#if data?.name}
             <a class="flex flex-row gap-2 shadow-2xl px-2 rounded bg-skin-secondary_accent" href="/race">
                 <Flag/>
                 <p class="align-middle leading-10">Race</p>
             </a>
+            {#if data?.name}
                 <a class="flex flex-row gap-2 shadow-2xl ml-auto px-2 rounded bg-skin-secondary_accent" href="/profile">
                     <Profile/>
                     <p class="align-middle leading-10">{data?.name}</p>

@@ -77,7 +77,7 @@
   setInterval(() => (currentTime = Date.now()), 100);
   setInterval(UpdateClientStates, 500);
 
-  if (browser) {
+  if (browser && data.name != undefined) {
     let eventSource: ReconnectingEventSource;
 
     eventSource = new ReconnectingEventSource("/race");
@@ -85,7 +85,7 @@
     eventSource.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (!message) return;
-      console.log(message);
+      //console.log(message);
       if (message.state) {
         state = message.state;
       }
@@ -121,7 +121,12 @@
       } else if (message.command == Command.Remove) {
         const index = racers.findIndex(({ name }) => name == message.name);
         if (index == -1) return;
-        racers.slice(index, 1);
+        racers.splice(index, 1);
+        if (racers.length > 0) {
+          racers[0].name = racers[0].name;
+        }
+        //Unformtunately svelte doesn't want to render this change
+        //console.log(racers)
       } else if (message.command == Command.Performance) {
         const index = racers.findIndex(({ name }) => name == message.name);
         if (index == -1) {
@@ -222,30 +227,29 @@
 
 <div class="flex justify-center">
   <div class="flex flex-col justify-start w-1/2 gap-2">
+    {#if data?.name}
     <div class="flex justify-center gap-2">
-      {#key racers}
       {#each racers as racer}
-        <div
-          class="flex flex-col gap-2 w-32 bg-skin-accent rounded shadow-2xl p-2"
-        >
-          <p class="text-center text-2xl">{racer.name}</p>
           <div
-            class="flex flex-col gap-2 bg-skin-secondary_accent rounded shadow-2xl p-2"
+            class="flex flex-col gap-2 w-32 bg-skin-accent rounded shadow-2xl p-2"
           >
-            {#if racer.wpm}
-              <p class="text-center">{racer.wpm}</p>
-            {:else}
-              <p class="text-center">0</p>
-            {/if}
-            {#if racer.progress}
-              <p class="text-center">{racer.progress}%</p>
-            {:else}
-              <p class="text-center">0%</p>
-            {/if}
+            <p class="text-center text-2xl">{racer.name}</p>
+            <div
+              class="flex flex-col gap-2 bg-skin-secondary_accent rounded shadow-2xl p-2"
+            >
+              {#if racer.wpm}
+                <p class="text-center">{racer.wpm}</p>
+              {:else}
+                <p class="text-center">0</p>
+              {/if}
+              {#if racer.progress}
+                <p class="text-center">{racer.progress}%</p>
+              {:else}
+                <p class="text-center">0%</p>
+              {/if}
+            </div>
           </div>
-        </div>
       {/each}
-      {/key}
       <div
         class="flex flex-col gap-2 w-32 bg-skin-accent rounded shadow-2xl p-2"
       >
@@ -354,6 +358,9 @@
           </div>
         {/if}
       </div>
+      {/if}
+    {:else}
+    <p class="text-center text-3xl">You must be signed in to access this feature</p>
     {/if}
   </div>
 </div>

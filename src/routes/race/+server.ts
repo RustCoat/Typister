@@ -5,7 +5,7 @@ import { prisma } from "$lib/scripts/Database";
 import { State, Command } from "$lib/scripts/States";
 import { Sentence } from "$lib/scripts/Script";
 
-const sentenceLength = 10;
+const sentenceLength = 30;
 let state: State = State.Waiting;
 let timeToStart: number = Date.now() + 15000;
 let timeToEnd: number = 0;
@@ -16,6 +16,7 @@ let completers : {name: string, wpm: number, timeForComplete: number}[] = [];
 
 setInterval(() => {
     TryStarting();
+    TryForceWaiting();
 }, 5000);
 
 setInterval(() => {
@@ -30,8 +31,9 @@ export const GET: RequestHandler = async ({ locals }) => {
             where: { session: locals.session },
         });
 
-        if (!user) throw redirect(302, "/signin");
-
+        //if (!user) throw redirect(302, "/signin");
+        if (!user) return new Response();
+        if (user.name == undefined) return new Response();
         //Maybe check if that user is already playing
 
         const stream = new ReadableStream({
@@ -155,6 +157,15 @@ function TryRacing() {
 function TryWaiting() {
     if (state != State.Ending) return;
     if (Date.now() < timeToEnd) return;
+
+    state = State.Waiting;
+    SendToEverySessionExcept("", {
+        state,
+    })
+}
+
+function TryForceWaiting() {
+    if (racers.length > 0) return;
 
     state = State.Waiting;
     SendToEverySessionExcept("", {

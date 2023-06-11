@@ -8,8 +8,8 @@ export const load = (async ({ locals }) => {
             where: { session: locals.session },
         });
     
-        if (!user) throw redirect(302, "/");    
-        return { name: user.name };
+        //if (!user) throw redirect(302, "/");    
+        return { name: user?.name };
     } catch (error) {
         console.log(error);
     }
