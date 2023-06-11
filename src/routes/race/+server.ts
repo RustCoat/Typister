@@ -38,6 +38,12 @@ export const GET: RequestHandler = async ({ locals }) => {
 
         const stream = new ReadableStream({
             start(controller) {
+                for (const sessionIteration in streams) {
+                    if (streams[sessionIteration!].name == user.name) {
+                        delete streams[sessionIteration!];
+                        RemoveRacer(sessionIteration);
+                    }
+                }
                 streams[locals.session!] = {controller, name: user.name};
                 AddRacer(locals.session);
                 SendState(locals.session);
