@@ -115,18 +115,14 @@
         const index = racers.findIndex(({ name }) => name == message.name);
         if (index != -1) return;
         racers.push({ name: message.name, wpm: 0, progress: 0 });
-        //Something wonky with how svelte updates object arrays
-        //A value has to change for it to register and render
         racers[racers.length - 1].name = message.name;
       } else if (message.command == Command.Remove) {
         const index = racers.findIndex(({ name }) => name == message.name);
         if (index == -1) return;
         racers.splice(index, 1);
-        if (racers.length > 0) {
-          racers[0].name = racers[0].name;
-        }
-        //Unformtunately svelte doesn't want to render this change
-        //console.log(racers)
+        //Suspect assignment like this are because of
+        //https://github.com/sveltejs/svelte/issues/3946
+        racers = racers;
       } else if (message.command == Command.Performance) {
         const index = racers.findIndex(({ name }) => name == message.name);
         if (index == -1) {
@@ -148,8 +144,6 @@
           wpm: message.wpm,
           timeForComplete: message.timeForComplete,
         });
-        //Something wonky with how svelte updates object arrays
-        //A value has to change for it to register and render
         completers[completers.length - 1].name = message.name;
         completers = insertionSort(completers);
         index = racers.findIndex(({ name }) => name == message.name);
@@ -229,8 +223,8 @@
   <div class="flex flex-col justify-start w-1/2 gap-2">
     {#if data?.name}
     <div class="flex justify-center gap-2">
-      {#key racers.length == 0}
-      {#each racers as racer}
+      {#key racers}
+      {#each racers as racer (racer)}
           <div
             class="flex flex-col gap-2 w-32 bg-skin-accent rounded shadow-2xl p-2"
           >
